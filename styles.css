@@ -1,0 +1,18 @@
+.rival-planet-card {
+    display: flex;
+    align-items: center;
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-bottom: 20px;
+    /* You can add more styling properties as needed */
+}
+
+.planet-image {
+    max-width: 100px; /* Adjust as needed */
+    margin-right: 15px;
+    /* You can add more image-related styles here */
+}
+
+.planet-details {
+    /* You can style the details container here */
+}
