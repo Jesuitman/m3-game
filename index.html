@@ -1,48 +1,56 @@
+<!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Your Title Here</title>
-    <link rel="stylesheet" href="styles.css"> <!-- Link to your CSS file -->
-    <script src="script.js" defer></script> <!-- Link to your JavaScript file -->
+    <title>Colony Space Sim</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="scripts.js" defer></script>
 </head>
-
 <body>
-    <!-- Your content goes here -->
-    <header>
-        <h1>Get Ready! Galactic Colony Sim is Live!!!</h1>
+    <div id="overlay" class="overlay">
+        <div class="modal">
+            <h2>Greetings Commander, our future is in your hands!</h2>
+            <p>Since the dawn of time, we have always dreamed of walking amongst the stars. 
+                Today, that dream is finally a reality! We have you to thank for your monumental efforts leading us in the field of space travel, 
+                intergalactic planetary terraforming, and long term cryogenic population control! There is just one small issue. Unfortunately, 
+                the moment we announce we are ready to colonize space, so too do the rest of the aliens out there! 
+                We don't have any time to waste! We need to get started on sending population craft to other planets! 
+                Make sure we are never sent into a negative spacebux(╬) amount, doing so would leave us wide open for alien visitors. You will get 1 
+                ╬ every turn, and you can use 5╬ to buy a population craft, you can use 10╬ to launch one. When you want to launch a craft, 
+                you can just click on the planet you want to send it to. When the other aliens try to populate our planets we can scramble their craft 
+                by buying a radar signal scrambler for 5╬! If you scramble an incoming craft it sends the craft to another planet which will 
+                make those planets rivals too! Hitting a rival drains 30╬ from their ╬ bank account so get those crafts moving! There is no 
+                limit to how many actions you can take in a turn but remember that you will always have a full turn to scramble an incoming population craft. 
+                With this in mind commander, I sure hope you have what it takes to take us to victory! GOOD LUCK!</p>
+            <button id="understandBtn">I Understand</button>
+        </div>
+    </div>
 
+    <header>
+        <h1>Get Ready, the Commander is on deck!!!</h1>
     </header>
 
     <main>
         <section id="spacebux">
             <h2>Your Spacebux</h2>
-            <p>This is the amount of Spacebux you have.</p>
+            <p>This is the amount of Spacebux you have. "number" ╬</p>
         </section>
 
         <section id="populationCraft">
             <h2>Your Population Craft Count</h2>
             <p>The amount of population craft you have goes here.</p>
+            <button id="buyCraftBtn">Buy Population Craft</button>
         </section>
 
-        <section id="services">
-            <h2>Rival Planets</h2>
-            <p>The currently active rival planets go here.</p>
-            <div class="rival-planet-card">
-                <img src="planet_image.jpg" alt="Rival Planet Image" class="planet-image">
-                <div class="planet-details">
-                    <h3>Rival Planet Name</h3>
-                    <p>Spacebux Count: ╬500</p>
-                </div>
-            </div>
+        <section id="rivals">
+            <!-- Rival planets and their details will be dynamically added here -->
         </section>
-        <!-- Add more sections/content as needed -->
     </main>
 
     <footer>
-        <p>&copy; 2023 Galatic Colony Sim. All Rights Reserved.</p>
+        <p>&copy; Copyleft 2023 Galactic Colony Sim. All Lefts Reserved.</p>
     </footer>
+    <script src="scripts.js"></script>
 </body>
-
 </html>
