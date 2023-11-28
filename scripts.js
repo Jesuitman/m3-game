@@ -55,8 +55,8 @@ function startGame() {
       timer = setInterval(() => {
         turn++;
         incrementSpacebux();
-        updatePlanets(); // Function to update rival planets' actions
-    }, 50); // 5 seconds per turn
+        updatePlanets(); 
+    }, 5000); 
     
     gameStarted = true;
 }
@@ -113,8 +113,6 @@ function updatePlanets() {
                 }
                 checkWinCondition()
             }
-      // Implement rival planet actions (e.g., increment spacebux, launch crafts, etc.)
-      // You can use similar logic as used for the player's actions
           }}}
     });
   }
@@ -187,12 +185,12 @@ function checkWinCondition() {
 
 
 function takeRandomAction() {
-    const activePlanets = planetArray.filter((planet) => !planet.fallen && planet.name !== player.name); // Exclude the commander planet
+    const activePlanets = planetArray.filter((planet) => !planet.fallen && planet.name !== player.name);
 
     const randomPlanetIndex = Math.floor(Math.random() * activePlanets.length);
     const randomPlanet = activePlanets[randomPlanetIndex];
 
-    const randomAction = Math.random() < 0.5 ? 'buyCraft' : 'launchCraft'; // 50% chance of buying or launching craft
+    const randomAction = Math.random() < 0.5 ? 'buyCraft' : 'launchCraft'; 
 
     if (randomAction === 'buyCraft') {
         buyCraftAction(randomPlanet);
@@ -210,9 +208,9 @@ function buyCraftAction(planet) {
         planet.spacebux -= 5;
         planet.populationCraft++;
         updateRivalPopulationCraftDisplay(planet)
-        return true; // Return true if the action is successful
+        return true;
     }
-    return false; // Return false if the action fails
+    return false; 
 }
 
 function updateRivalPopulationCraftDisplay(planet) {
