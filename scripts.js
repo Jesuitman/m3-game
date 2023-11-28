@@ -1,14 +1,16 @@
 let player = {
     name: "Commander",
-    spacebux: 1500,
-    populationCraft: 0
+    spacebux: 0,
+    populationCraft: 0 
 }
+let commanderFallen = false
 let turn = 0
 let timer
 let gameStarted = false
 let turnsSinceLastAction = 0
 
 let planetArray = [
+    { name:`${player.name}`, spacebux: `${player.spacebux}`, populationCraft: `${player.populationCraft}`},
     { name: "Rival Planet 1", spacebux: 0, populationCraft: 0 },
     { name: "Rival Planet 2", spacebux: 0, populationCraft: 0 },
     { name: "Rival Planet 3", spacebux: 0, populationCraft: 0 },
@@ -36,22 +38,11 @@ function updateSpacebuxDisplay() {
     spacebuxDisplay.textContent = `${player.spacebux} ╬ `;
 }
 
-function updatePopulationCraftDisplay(planet) {
+function updatePopulationCraftDisplay(player) {
     const craftDisplay = document.getElementById("populationCraftCount");
-    if (craftDisplay) {
-        if (planet === player) {
-            craftDisplay.textContent = `${player.populationCraft} Population Crafts `;
-        } else {
-            const planetCard = document.getElementById(planet.name.replace(/ /g, "_"));
-            if (planetCard) {
-                const craftCount = planetCard.querySelector("p:nth-of-type(3)"); // Assuming craft count is the third paragraph in the planet card
-                if (craftCount) {
-                    craftCount.textContent = ` Population Craft: ${planet.populationCraft} (Rival)`;
-                }
-            }
-        }
-    }
+        craftDisplay.textContent = `${player.populationCraft} Population Crafts `;
 }
+ 
 
 
 function incrementSpacebux() {
@@ -76,7 +67,7 @@ const understandBtn = document.getElementById("understandBtn");
 understandBtn.addEventListener("click", () => {
   startGame();
   const overlay = document.getElementById("overlay");
-  overlay.classList.add("hidden"); // Hide the overlay by adding the 'hidden' class
+  overlay.classList.add("hidden"); 
 });
 
 const buyCraftBtn = document.getElementById("buyCraftBtn");
@@ -87,7 +78,7 @@ buyCraftBtn.addEventListener("click", () => {
     updateSpacebuxDisplay();
     updatePopulationCraftDisplay(player);
   } else {
-    console.log("Not enough Spacebux to buy a population craft!");
+    addToActionLog("Not enough Spacebux to buy a population craft!");
   }
 });
 
@@ -95,6 +86,8 @@ function updatePlanets() {
     turnsSinceLastAction++
 
     if(turnsSinceLastAction>2){
+        takeRandomAction()
+        takeRandomAction()
         takeRandomAction()
         turnsSinceLastAction=0
     }
@@ -112,6 +105,12 @@ function updatePlanets() {
                 planetCard.classList.add("conqueredPlanet")
                 replaceWithConqueredText(planetCard)
                 planet.fallen = true
+                addToActionLog(`${planet.name} has fallen!`)
+                if (planet.name === 'Commander' && !commanderFallen) {
+                    commanderFallen = true;
+                    checkWinCondition();
+                    alert("Commander has fallen! We've lost Earth!")
+                }
                 checkWinCondition()
             }
       // Implement rival planet actions (e.g., increment spacebux, launch crafts, etc.)
@@ -134,7 +133,8 @@ function updatePlanets() {
     planetSpacebux.classList.add("spacebux-count"); 
   
     const planetPopulationCraft = document.createElement("p");
-    planetPopulationCraft.textContent = ` Population Craft: ${planet.populationCraft}`; 
+    planetPopulationCraft.textContent = ` Population Craft: ${planet.populationCraft}`;
+    planetPopulationCraft.classList.add("population-craft-count")
   
     card.appendChild(planetName);
     card.appendChild(planetSpacebux);
@@ -149,13 +149,13 @@ function sendPopulationCraft(sender, target) {
     if(sender.populationCraft>0 && sender.spacebux>9){
         sender.populationCraft --
         sender.spacebux -=10
-        target.spacebux -=3000
+        target.spacebux -=30
         updateSpacebuxDisplay()
         updatePopulationCraftDisplay(sender);
         updatePlanets()
-        console.log(`${sender.name}'s population craft has successfully hit target ${target.name}!`)
+        addToActionLog(`${sender.name}'s population craft has successfully hit target ${target.name}!`)
     } else {
-        console.log(`Hey ${sender.name}, get 10 spacebux and at least 1 population craft before trying to send it out!`)
+        addToActionLog(`Hey ${sender.name}, get 10 spacebux and at least 1 population craft before trying to send it out!`)
     }
 }
 
@@ -170,17 +170,24 @@ function replaceWithConqueredText(planetCard) {
     planetCard.innerHTML = conqueredText;
   }
 
-  function checkWinCondition() {
-    const allPlanetsFallen = planetArray.every((planet) => planet.fallen);
-    if (allPlanetsFallen) {
+function checkWinCondition() {
+    const remainingPlanets = planetArray.filter((planet) => !planet.fallen)
+    if (remainingPlanets.length === 1) {
+        const winner = remainingPlanets[0]
         clearInterval(timer); 
-        alert("Congratulations! You have successfully defended against all rival planets. You win!");
+        if(winner.name === 'Commander'){
+        addToActionLog(`Congratulations Commander! The last of the alien planets have been conquered!`)
+        alert(`Congratulations Commander! The last of the alien planets have been conquered!`);
+        } else{
+        addToActionLog(`${winner.name} is the last planet standing and wins the game!`)
+        alert(`${winner.name} is the last planet standing and wins the game!`);
+        }
     }
 }
 
 
 function takeRandomAction() {
-    const activePlanets = planetArray.filter((planet) => !planet.fallen)
+    const activePlanets = planetArray.filter((planet) => !planet.fallen && planet.name !== player.name); // Exclude the commander planet
 
     const randomPlanetIndex = Math.floor(Math.random() * activePlanets.length);
     const randomPlanet = activePlanets[randomPlanetIndex];
@@ -189,8 +196,6 @@ function takeRandomAction() {
 
     if (randomAction === 'buyCraft') {
         buyCraftAction(randomPlanet);
-        updatePopulationCraftDisplay(randomPlanet)
-
     } else if (randomAction === 'launchCraft') {
         const activeTargets = planetArray.filter((target) => !target.fallen && target !== randomPlanet);
         const randomTargetIndex = Math.floor(Math.random() * activeTargets.length);
@@ -204,8 +209,25 @@ function buyCraftAction(planet) {
     if (planet.spacebux >= 5) {
         planet.spacebux -= 5;
         planet.populationCraft++;
-        updatePopulationCraftDisplay(planet)
+        updateRivalPopulationCraftDisplay(planet)
         return true; // Return true if the action is successful
     }
     return false; // Return false if the action fails
+}
+
+function updateRivalPopulationCraftDisplay(planet) {
+    const planetCard = document.getElementById(planet.name.replace(/ /g, "_"));
+    if (planetCard) {
+        const craftDisplay = planetCard.querySelector(".population-craft-count");
+        if (craftDisplay) {
+            craftDisplay.textContent = ` Population Craft: ${planet.populationCraft}`;
+        }
+    }
+}
+
+function addToActionLog(message) {
+    const logContent = document.getElementById('logContent');
+    const logMessage = document.createElement('p');
+    logMessage.textContent = message;
+    logContent.appendChild(logMessage);
 }
