@@ -1,149 +1,138 @@
-let playerSpacebux = -1;
-let populationCraftCount = 0;
+let player = {
+    name: "Commander",
+    spacebux: 0,
+    populationCraft: 0
+}
+let turn = 0
+let timer
+let gameStarted = false
+
 let rivalPlanets = [
-    { name: "Rival Planet 1", spacebux: 1 },
-    { name: "Rival Planet 2", spacebux: 1 },
-    { name: "Rival Planet 3", spacebux: 1 },
-    { name: "Rival Planet 4", spacebux: 1 },
-    { name: "Rival Planet 5", spacebux: 1 },
-    { name: "Rival Planet 6", spacebux: 1 },
-    { name: "Rival Planet 7", spacebux: 1 },
-    { name: "Rival Planet 8", spacebux: 1 },
-    { name: "Rival Planet 9", spacebux: 1 },
-    { name: "Rival Planet 10", spacebux: 1 },
-    { name: "Rival Planet 11", spacebux: 1 },
-    { name: "Rival Planet 12", spacebux: 1 },
-    { name: "Rival Planet 13", spacebux: 1 },
-    { name: "Rival Planet 14", spacebux: 1 },
-    { name: "Rival Planet 15", spacebux: 1 },
-    { name: "Rival Planet 16", spacebux: 1 },
-    { name: "Rival Planet 17", spacebux: 1 },
-    { name: "Rival Planet 18", spacebux: 1 },
-    { name: "Rival Planet 19", spacebux: 1 },
-    { name: "Rival Planet 20", spacebux: 1 },
+    { name: "Rival Planet 1", spacebux: 0, populationCraft: 0},
+    { name: "Rival Planet 2", spacebux: 0, populationCraft: 0 },
+    { name: "Rival Planet 3", spacebux: 0, populationCraft: 0 },
+    { name: "Rival Planet 4", spacebux: 0, populationCraft: 0 },
+    { name: "Rival Planet 5", spacebux: 0, populationCraft: 0 },
+    { name: "Rival Planet 6", spacebux: 0, populationCraft: 0 },
+    { name: "Rival Planet 7", spacebux: 0, populationCraft: 0 },
+    { name: "Rival Planet 8", spacebux: 0, populationCraft: 0 },
+    { name: "Rival Planet 9", spacebux: 0, populationCraft: 0 },
+    { name: "Rival Planet 10", spacebux: 0, populationCraft: 0 },
+    { name: "Rival Planet 11", spacebux: 0, populationCraft: 0 },
+    { name: "Rival Planet 12", spacebux: 0, populationCraft: 0 },
+    { name: "Rival Planet 13", spacebux: 0, populationCraft: 0 },
+    { name: "Rival Planet 14", spacebux: 0, populationCraft: 0 },
+    { name: "Rival Planet 15", spacebux: 0, populationCraft: 0 },
+    { name: "Rival Planet 16", spacebux: 0, populationCraft: 0 },
+    { name: "Rival Planet 17", spacebux: 0, populationCraft: 0 },
+    { name: "Rival Planet 18", spacebux: 0, populationCraft: 0 },
+    { name: "Rival Planet 19", spacebux: 0, populationCraft: 0 },
+    { name: "Rival Planet 20", spacebux: 0, populationCraft: 0 },
 ];
 
-
-window.onload = function () {
-    const overlay = document.getElementById('overlay');
-    overlay.style.display = 'grid';
-
-    const understandBtn = document.getElementById('understandBtn');
-    understandBtn.addEventListener('click', function () {
-        overlay.style.display = 'none';
-        updateAllDisplays();
-        setInterval(incrementSpacebux, 500);
-    });
-};
+function updateSpacebuxDisplay() {
+    const spacebuxDisplay = document.getElementById("spacebuxAmount");
+    spacebuxDisplay.textContent = `${player.spacebux} ╬`;
+}
 
 function updatePopulationCraftDisplay() {
-    const populationCraftElement = document.getElementById('populationCraft');
-    populationCraftElement.innerHTML = 
-    `<h2>Your Population Craft Count</h2>
-    <p>The amount of population craft you have: ${populationCraftCount}</p>`;
-  }
+    const craftDisplay = document.getElementById("populationCraftCount");
+    craftDisplay.textContent = `${player.populationCraft} Population Crafts`;
+}
 
-  function updateSpacebuxDisplay() {
-    const spacebuxElement = document.getElementById('spacebux');
-    spacebuxElement.innerHTML = `
-    <h2>Your Spacebux</h2>
-    <p>This is the amount of Spacebux you have: ${playerSpacebux}╬</p>`;
-  }
+function incrementSpacebux() {
+    player.spacebux++;
+    updateSpacebuxDisplay();
+}
 
-  function updateRivalPlanetsDisplay() {
-    const rivalPlanetsSection = document.getElementById('rivals');
-    const rivalPlanetsContent = rivalPlanets.map(planet => `
-      <div class="rival-planet-card">
-        <img src="planet_image.jpg" alt="Rival Planet Image" class="planet-image">
-        <div class="planet-details">
-          <h3>${planet.name}</h3>
-          <p>Spacebux Count: ${planet.spacebux}╬</p>
-        </div>
-      </div>`).join('');
-  
-    rivalPlanetsSection.innerHTML = `<h2>Rival Planets</h2>${rivalPlanetsContent}`;
-  }
-  
-  function updateRivalPlanetsSpacebux() {
-    const rivalPlanetsSection = document.getElementById('rivals');
-    const rivalPlanetElements = rivalPlanetsSection.getElementsByClassName('planet-details');
-  
-    rivalPlanets.forEach((planet, index) => {
-      const planetElement = rivalPlanetElements[index];
-      const spacebuxElement = planetElement.querySelector('p');
-      spacebuxElement.textContent = `Spacebux Count: ${planet.spacebux}╬`;
-    });
-  }
+function startGame() {
+    if (!gameStarted) {
+      timer = setInterval(() => {
+        turn++;
+        incrementSpacebux();
+        updateRivalPlanets(); // Function to update rival planets' actions
+    }, 500); // 5 seconds per turn
+    
+    gameStarted = true;
+}
+}
+displayRivalPlanets()
 
-  function updateAllDisplays() {
+const understandBtn = document.getElementById("understandBtn");
+understandBtn.addEventListener("click", () => {
+  startGame(); // Start the game
+  const overlay = document.getElementById("overlay");
+  overlay.classList.add("hidden"); // Hide the overlay by adding the 'hidden' class
+});
+
+const buyCraftBtn = document.getElementById("buyCraftBtn");
+buyCraftBtn.addEventListener("click", () => {
+  if (player.spacebux >= 5) {
+    player.spacebux -= 5;
+    player.populationCraft++;
     updateSpacebuxDisplay();
     updatePopulationCraftDisplay();
-    updateRivalPlanetsDisplay();
+  } else {
+    // Handle insufficient spacebux
+    console.log("Not enough Spacebux to buy a population craft!");
   }
-  
-  function launchSpacecraft(targetPlanetIndex) {
-    if (!gameOver && playerSpacebux >= 10) {
-      updatePlayerSpacebux(-10);
+});
 
-      const randomIndex = Math.floor(Math.random() * planets.length);
-      const hitPlanetIndex = targetPlanetIndex !== undefined ? targetPlanetIndex : randomIndex;
+function updateRivalPlanets() {
+    rivalPlanets.forEach((planet) => {
+        planet.spacebux++
 
-      if (hitPlanetIndex !== undefined) {
-        const hitPlanet = planets[hitPlanetIndex];
-        hitPlanet.spacebux -= 30;
-        if (hitPlanet.spacebux < 0) {
-          hitPlanet.spacebux = 0;
-          gameOver = true;
-          alert(`Planet ${hitPlanetIndex + 1} is out of Spacebux. Game Over!`);
-        }
-      }
-    }
-  }
-
-  function purchasePopulationCraft() {
-    if (!gameOver && playerSpacebux >= 5) {
-      updatePlayerSpacebux(-5);
-    }
-  }
-
-  function updatePlayerSpacebux(amount) {
-    playerSpacebux += amount;
-    if (playerSpacebux < 0) {
-      playerSpacebux = 0;
-      gameOver = true;
-      alert('You are out of Spacebux. Game Over!');
-    }
-    document.getElementById('playerSpacebux').textContent = playerSpacebux;
-  }
-
-  function simulateAIActions() {
-    const aiPurchaseChance = 0.5; // Probability of AI buying a population craft
-    const aiLaunchChance = 0.6; // Probability of AI launching spacecraft
-
-    planets.forEach((planet, index) => {
-      const shouldPurchase = Math.random() < aiPurchaseChance;
-      const shouldLaunch = Math.random() < aiLaunchChance;
-
-      if (shouldPurchase && planet.spacebux >= 5) {
-        planet.spacebux -= 5;
-      }
-
-      if (shouldLaunch && planet.spacebux >= 10) {
-        const targetPlanetIndex = Math.floor(Math.random() * planets.length);
-        launchSpacecraft(targetPlanetIndex);
-      }
+        const planetCard = document.getElementById(planet.name.replace(/ /g, "_"));
+        if (planetCard) {
+          const spacebuxDisplay = planetCard.querySelector("p");
+          if (spacebuxDisplay) {
+            spacebuxDisplay.textContent = `Spacebux: ${planet.spacebux} ╬`;
+      // Implement rival planet actions (e.g., increment spacebux, launch crafts, etc.)
+      // You can use similar logic as used for the player's actions
+          }}
     });
   }
 
-  // Run AI actions periodically (for demonstration purposes)
-  function incrementSpacebux() {
-      playerSpacebux += 1;
-      updateSpacebuxDisplay();
-      updateRivalPlanetsSpacebux()
-      // Increment spacebux for rival planets
-      rivalPlanets.forEach(planet => {
-          planet.spacebux += 1;
-        });
-        updateRivalPlanetsDisplay();
+  function createRivalCard(planet) {
+    const rivalSection = document.getElementById("rivals");
+    const card = document.createElement("div");
+    card.classList.add("rival-planet-card");
+    card.id = planet.name.replace(/ /g, "_"); // Set the ID for each card
+  
+    const planetName = document.createElement("h3");
+    planetName.textContent = planet.name;
+  
+    const planetSpacebux = document.createElement("p");
+    planetSpacebux.textContent = `Spacebux: ${planet.spacebux} ╬`;
+    planetSpacebux.classList.add("spacebux-count"); // Add a class to spacebux count for targeting
+  
+    const planetPopulationCraft = document.createElement("p");
+    planetPopulationCraft.textContent = `Population Craft: ${planet.populationCraft}`; 
+  
+    card.appendChild(planetName);
+    card.appendChild(planetSpacebux);
+    card.appendChild(planetPopulationCraft);
+    
+    rivalSection.appendChild(card);
+
+    card.addEventListener("click", () => sendPopulationCraft(player,planet))
+}
+
+function sendPopulationCraft(sender, target) {
+    if(sender.populationCraft>0 && sender.spacebux>10){
+        sender.populationCraft --
+        sender.spacebux -=10
+        target.spacebux -=30
+        updateSpacebuxDisplay()
+        updatePopulationCraftDisplay();
+    } else {
+        console.log("Get 10 spacebux and at least 1 population craft before trying to send it out!")
     }
-    setInterval(simulateAIActions, 3000); // Adjust the interval as needed
+}
+
+function displayRivalPlanets() {
+    rivalPlanets.forEach((planet) => {
+        createRivalCard(planet);
+    });
+}
+
