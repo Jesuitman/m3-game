@@ -14,10 +14,6 @@
     /* You can add more image-related styles here */
 }
 
-.planet-details {
-    /* You can style the details container here */
-}
-
 .hidden {
     display: none;
 }
@@ -41,3 +37,8 @@
     margin: 100px auto;
     text-align: center;
 }
+
+.conqueredPlanet {
+    background-color: #ffcccc; /* Change background color to red or any other style you prefer */
+    /* Add any additional styling for the negative spacebux card */
+  }

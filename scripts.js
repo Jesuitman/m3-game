@@ -1,6 +1,6 @@
 let player = {
     name: "Commander",
-    spacebux: 0,
+    spacebux: 1500,
     populationCraft: 0
 }
 let turn = 0
@@ -32,7 +32,7 @@ let rivalPlanets = [
 
 function updateSpacebuxDisplay() {
     const spacebuxDisplay = document.getElementById("spacebuxAmount");
-    spacebuxDisplay.textContent = `${player.spacebux} ╬`;
+    spacebuxDisplay.textContent = `${player.spacebux} ╬ `;
 }
 
 function updatePopulationCraftDisplay() {
@@ -80,16 +80,24 @@ buyCraftBtn.addEventListener("click", () => {
 
 function updateRivalPlanets() {
     rivalPlanets.forEach((planet) => {
+        if(!planet.fallen){
         planet.spacebux++
 
         const planetCard = document.getElementById(planet.name.replace(/ /g, "_"));
         if (planetCard) {
           const spacebuxDisplay = planetCard.querySelector("p");
           if (spacebuxDisplay) {
-            spacebuxDisplay.textContent = `Spacebux: ${planet.spacebux} ╬`;
+            spacebuxDisplay.textContent = `Spacebux: ${planet.spacebux} ╬ `;
+            if (planet.spacebux < 0){
+                planetCard.classList.add("conqueredPlanet")
+                replaceWithConqueredText(planetCard)
+                planet.spacebux = -10000
+                planet.fallen = true
+                checkWinCondition()
+            }
       // Implement rival planet actions (e.g., increment spacebux, launch crafts, etc.)
       // You can use similar logic as used for the player's actions
-          }}
+          }}}
     });
   }
 
@@ -103,11 +111,11 @@ function updateRivalPlanets() {
     planetName.textContent = planet.name;
   
     const planetSpacebux = document.createElement("p");
-    planetSpacebux.textContent = `Spacebux: ${planet.spacebux} ╬`;
+    planetSpacebux.textContent = `Spacebux: ${planet.spacebux} ╬ `;
     planetSpacebux.classList.add("spacebux-count"); // Add a class to spacebux count for targeting
   
     const planetPopulationCraft = document.createElement("p");
-    planetPopulationCraft.textContent = `Population Craft: ${planet.populationCraft}`; 
+    planetPopulationCraft.textContent = ` Population Craft: ${planet.populationCraft}`; 
   
     card.appendChild(planetName);
     card.appendChild(planetSpacebux);
@@ -119,12 +127,13 @@ function updateRivalPlanets() {
 }
 
 function sendPopulationCraft(sender, target) {
-    if(sender.populationCraft>0 && sender.spacebux>10){
+    if(sender.populationCraft>0 && sender.spacebux>9){
         sender.populationCraft --
         sender.spacebux -=10
         target.spacebux -=30
         updateSpacebuxDisplay()
         updatePopulationCraftDisplay();
+        updateRivalPlanets()
     } else {
         console.log("Get 10 spacebux and at least 1 population craft before trying to send it out!")
     }
@@ -136,3 +145,15 @@ function displayRivalPlanets() {
     });
 }
 
+function replaceWithConqueredText(planetCard) {
+    const conqueredText = document.getElementById("conqueredPlanet").innerHTML;
+    planetCard.innerHTML = conqueredText;
+  }
+
+  function checkWinCondition() {
+    const allPlanetsFallen = rivalPlanets.every((planet) => planet.fallen);
+    if (allPlanetsFallen) {
+        clearInterval(timer); // Stop the game timer
+        alert("Congratulations! You have successfully defended against all rival planets. You win!");
+    }
+}
