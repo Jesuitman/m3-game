@@ -56,7 +56,7 @@ function startGame() {
         turn++;
         incrementSpacebux();
         updatePlanets(); 
-    }, 5000); 
+    }, 50); 
     
     gameStarted = true;
 }
@@ -185,7 +185,7 @@ function checkWinCondition() {
 
 
 function takeRandomAction() {
-    const activePlanets = planetArray.filter((planet) => !planet.fallen && planet.name !== player.name);
+    const activePlanets = planetArray.filter((planet) => !planet.fallen && planet.name !== player.name); // Exclude the commander planet
 
     const randomPlanetIndex = Math.floor(Math.random() * activePlanets.length);
     const randomPlanet = activePlanets[randomPlanetIndex];
