@@ -56,7 +56,7 @@ function startGame() {
         turn++;
         incrementSpacebux();
         updatePlanets(); 
-    }, 50); 
+    }, 500); 
     
     gameStarted = true;
 }
